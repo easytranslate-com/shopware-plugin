@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../../engine/Shopware/Components/Plugin/schema/config.xsd">
+
+    <elements>
+        <element type="text">
+            <name>Client Id</name>
+            <label lang="de">Client Id</label>
+            <label lang="en">Client Id</label>
+            <value></value>
+            <description lang="de">Die Client-Id des Übersetzungs-Services.</description>
+            <description lang="en">The Client-Id of the translation service</description>
+        </element>
+        <element type="text">
+            <name>Client Secret</name>
+            <label lang="de">Client Secret</label>
+            <label lang="en">Client Secret</label>
+            <value></value>
+            <description lang="de">Der Client-Secret des Übersetzungs-Services.</description>
+            <description lang="en">The Client-Secret of the translation service</description>
+        </element>
+        <element type="text">
+            <name>Username</name>
+            <label lang="de">Benutzername</label>
+            <label lang="en">Username</label>
+            <value></value>
+            <description lang="de">Der Benutzername für den Übersetzungs-Service.</description>
+            <description lang="en">The username for the translation service</description>
+        </element>
+        <element type="text">
+            <name>Password</name>
+            <label lang="de">Passwort</label>
+            <label lang="en">Password</label>
+            <value></value>
+            <description lang="de">Das Passwort für den Übersetzungs-Service.</description>
+            <description lang="en">The password for the translation service</description>
+        </element>
+        <element type="boolean">
+            <name>Sandbox Mode</name>
+            <label lang="de">Sandbox Modus</label>
+            <label lang="en">Sandbox mode</label>
+            <value>false</value>
+            <description lang="de">Sandbox-Modus</description>
+            <description lang="en">Sandbox-mode</description>
+        </element>
+    </elements>
+
+</config>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="easytranslate.subscriber.controller_path" class="Easytranslate\Subscriber\ControllerPath">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber" />
+        </service>
+
+        <service id="easytranslate.subscriber.templates" class="Easytranslate\Subscriber\ExtendProductList">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="easytranslate.fixture_service" class="Easytranslate\Components\Easytranslate\FixtureService">
+            <argument type="service" id="dbal_connection" />
+            <argument type="service" id="models" />
+        </service>
+
+        <service id="easytranslate.api" class="Easytranslate\Components\EasytranslateApi">
+            <argument type="service" id="service_container" />
+        </service>
+
+        <service id="easytranslate.project_repository" class="Easytranslate\Components\ProjectRepository">
+            <argument type="service" id="models" />
+        </service>
+
+        <service id="easytranslate.task_repository" class="Easytranslate\Components\TaskRepository">
+            <argument type="service" id="models" />
+        </service>
+
+        <service id="easytranslate.task_log_repository" class="Easytranslate\Components\TaskLogRepository">
+            <argument type="service" id="models" />
+        </service>
+
+        <service id="easytranslate.subscriber.webhook_subscriber"
+                 class="Easytranslate\Subscriber\WebhookSubscriber">
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="easytranslate.subscriber.extend_product_list" class="Easytranslate\Subscriber\ExtendProductList">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="easytranslate.subscriber.extend_snippet" class="Easytranslate\Subscriber\ExtendSnippet">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="easytranslate.subscriber.extend_category" class="Easytranslate\Subscriber\ExtendCategory">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="easytranslate.subscriber.extend_property" class="Easytranslate\Subscriber\ExtendProperty">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+        <service id="easytranslate.subscriber.extend_emotion" class="Easytranslate\Subscriber\ExtendEmotion">
+            <argument type="service" id="service_container" />
+            <tag name="shopware.event_subscriber"/>
+        </service>
+
+
+    </services>
+</container>
