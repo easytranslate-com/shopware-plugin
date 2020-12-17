@@ -89,9 +89,13 @@ Ext.define('Shopware.apps.Easytranslate.view.detail.Project', {
                         acceptOrDecline: 'accept'
                     },
                     success: function(operation, opts) {
-                        var response = Ext.decode(operation.responseText);
+                        try {
+                            var response = Ext.decode(operation.responseText);
+                        } catch (e) {
+                            var response = null
+                        }
 
-                        if (response.success === false) {
+                        if (!response || response.success === false) {
                             Shopware.Notification.createGrowlMessage(
                                 '{s name=projectPriceAcceptErrorTitle}Error{/s}',
                                 '{s name=projectPriceAcceptErrorText}Could not accept price for project{/s}',
@@ -126,9 +130,13 @@ Ext.define('Shopware.apps.Easytranslate.view.detail.Project', {
                         acceptOrDecline: 'decline'
                     },
                     success: function(operation, opts) {
-                        var response = Ext.decode(operation.responseText);
+                        try {
+                            var response = Ext.decode(operation.responseText);
+                        } catch (e) {
+                            var response = null
+                        }
 
-                        if (response.success === false) {
+                        if (!response || response.success === false) {
                             Shopware.Notification.createGrowlMessage(
                                 '{s name=projectPriceDeclineErrorTitle}Error{/s}',
                                 '{s name=projectPriceDeclineErrorText}Could not decline price for project{/s}',

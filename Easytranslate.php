@@ -3,8 +3,10 @@
 namespace Easytranslate;
 
 use Shopware\Components\Plugin;
+use Shopware\Components\Plugin\Context\UpdateContext;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Doctrine\ORM\Tools\SchemaTool;
+use Easytranslate\Setup\Updater;
 
 /**
  * Shopware-Plugin Easytranslate.
@@ -37,6 +39,21 @@ class Easytranslate extends Plugin
     }
 
     /**
+     * @param Shopware\Components\Plugin\Context\UpdateContext $updateContext
+     */
+    public function update(UpdateContext $context)
+    {
+        $updater = new Updater(
+            $this->container->get('shopware_attribute.crud_service'),
+            $this->container->get('models'),
+            $this->container->get('dbal_connection')
+        );
+        $updater->update($context->getCurrentVersion());
+
+        $context->scheduleClearCache(UpdateContext::CACHE_LIST_ALL);
+    }
+
+    /**
     * @param ContainerBuilder $container
     */
     public function build(ContainerBuilder $container)
@@ -55,7 +72,8 @@ class Easytranslate extends Plugin
             $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Task::class),
             $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Project::class),
             $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Task::class),
-            $this->container->get('models')->getClassMetadata(\Easytranslate\Models\TaskLog::class)
+            $this->container->get('models')->getClassMetadata(\Easytranslate\Models\TaskLog::class),
+            $this->container->get('models')->getClassMetadata(\Easytranslate\Models\TranslationProfile::class)
         ];
         $tool->createSchema($classes);
     }
@@ -67,7 +85,8 @@ class Easytranslate extends Plugin
             $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Task::class),
             $this->container->get('models')->getClassMetadata(\Easytranslate\Models\TaskLog::class),
             $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Task::class),
-            $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Project::class)
+            $this->container->get('models')->getClassMetadata(\Easytranslate\Models\Project::class),
+            $this->container->get('models')->getClassMetadata(\Easytranslate\Models\TranslationProfile::class)
         ];
         $tool->dropSchema($classes);
     }

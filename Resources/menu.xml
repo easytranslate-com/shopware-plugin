@@ -9,6 +9,25 @@
             <action>index</action>
             <class>sprite-globe-green</class>
             <parent identifiedBy="controller">Content</parent>
+            <children>
+                <entry>
+                    <name>Easytranslate</name>
+                    <label lang="en">Projects</label>
+                    <label lang="de">Projekte</label>
+                    <controller>Easytranslate</controller>
+                    <action>additionalMenuEntry</action>
+                    <class>sprite-category</class>
+                </entry>
+                <entry>
+                    <name>Translation Profiles</name>
+                    <label lang="en">Translation Profiles</label>
+                    <label lang="de">Übersetzungs-Profile</label>
+                    <controller>TranslationProfile</controller>
+                    <action>index</action>
+                    <class>sprite-gear</class>
+                </entry>
+            </children>
         </entry>
+
     </entries>
 </menu>

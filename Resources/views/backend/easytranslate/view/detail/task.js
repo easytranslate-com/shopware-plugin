@@ -23,23 +23,33 @@ Ext.define('Shopware.apps.Easytranslate.view.detail.Task', {
             columns: {
                 sourceShopId: {
                     flex: 1,
+                    align: 'left',
                     header: '{s name=sourceShopHeader}Source shop{/s}',
                     renderer: Ext.bind(me.shopRenderer, me)
                 },
                 targetShopId: {
                     flex: 1,
+                    align: 'left',
                     header: '{s name=targetShopHeader}Target shop{/s}',
                     renderer: Ext.bind(me.shopRenderer, me)
                 },
                 status: {
-                    flex: 2,
+                    flex: 1,
                     header: '{s name=StatusHeader}Status{/s}',
                 },
                 price: {
                     header: '{s name=PriceHeader}Price{/s}',
                     renderer: me.priceRenderer,
-                    flex: 2
-                }
+                    flex: 1
+                },
+                creationDate: {
+                    header: '{s name=CreationDateHeader}Created{/s}',
+                    flex: 1
+                },
+                deadline: {
+                    header: '{s name=DeadlineHeader}Deadline{/s}',
+                    flex: 1
+                },
             },
             deleteButton: false,
             addButton: false,
@@ -99,18 +109,30 @@ Ext.define('Shopware.apps.Easytranslate.view.detail.Task', {
                                 method: 'POST',
                                 jsonData: data,
                                 success: function(operation, opts) {
-                                    var response = Ext.decode(operation.responseText);
+                                    try {
+                                        var response = Ext.decode(operation.responseText);
+                                    } catch (e) {
+                                        var response = null
+                                    }
 
-                                    if (response.success === false) {
-                                        Shopware.Notification.createGrowlMessage(
-                                            '{s name=fetchTranslationErrorTitle}Error{/s}',
+                                    if (!response || response.success === false) {
+                                        Ext.MessageBox.alert(
+                                            '',
                                             '{s name=fetchTranslationErrorMessage}Something went wrong fetching the translation(s){/s}',
-                                        );
+                                            function () {})
+                                        // Shopware.Notification.createGrowlMessage(
+                                        //     '{s name=fetchTranslationErrorTitle}Error{/s}',
+                                        //     '{s name=fetchTranslationErrorMessage}Something went wrong fetching the translation(s){/s}',
+                                        // );
                                     } else {
-                                        Shopware.Notification.createGrowlMessage(
-                                            '{s name=fetchTranslationSuccessTitle}Success{/s}',
+                                        Ext.MessageBox.alert(
+                                            '',
                                             '{s name=fetchTranslationSuccessMessage}Translations updated{/s}',
-                                        );
+                                            function () {})
+                                        // Shopware.Notification.createGrowlMessage(
+                                        //     '{s name=fetchTranslationSuccessTitle}Success{/s}',
+                                        //     '{s name=fetchTranslationSuccessMessage}Translations updated{/s}',
+                                        // );
                                     }
                                 }
                             });

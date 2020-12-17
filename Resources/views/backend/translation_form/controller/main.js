@@ -50,6 +50,7 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
                 defaults: { anchor: '100%' },
                 layout: 'anchor',
                 items: [
+                    me.getTranslationProfileComboBox(),
                     me.getSourceLanguageComboBox(),
                     me.getTargetLanguageComboBox(),
                 ]
@@ -112,10 +113,11 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
         var comboBox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '{s name=sourceLanguageLabel}Source Language{/s}',
             store: languagesStore,
-            queryMode: 'local',
+            queryMode: 'remote', // TODO
             displayField: 'name',
             valueField: 'id',
             forceSelection: true,
+            anyMatch: true,
             helpText: '{s name=sourceLanguageHelpText}The language of the selected shop will be used as the source language{/s}',
             renderTo: Ext.getBody()
         });
@@ -134,7 +136,7 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
         var comboBox = Ext.create('Ext.form.ComboBox', {
             fieldLabel: '{s name=targetLanguageLabel}Target Language{/s}',
             store: languagesStore,
-            queryMode: 'local',
+            queryMode: 'remote',
             displayField: 'name',
             valueField: 'id',
             forceSelection: true,
@@ -146,6 +148,56 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
         me.targetShopComboBox = comboBox;
 
         return comboBox;
+    },
+
+    getTranslationProfileComboBox() {
+        var me = this;
+        var translationProfileStore = Ext.create('Shopware.apps.TranslationProfile.store.TranslationProfile',
+            { fields: ['profileName', 'sourceShopId', 'targetShopIds'], autoLoad: true }
+        );
+
+        var comboBox = Ext.create('Ext.form.ComboBox', {
+            fieldLabel: '{s name=translationProfileLabel}TranslationProfile{/s}',
+            store: translationProfileStore,
+            queryMode: 'local',
+            displayField: 'profileName',
+            valueField: 'id',
+            forceSelection: true,
+            multiSelect: false,
+            helpText: '{s name=translationProfileComboboxHelpText}Pick a preset from your configured translation profiles{/s}',
+            listeners:{
+                'change': function () {
+                    const selection = this.lastSelection[0].data
+                    me.onTranslationProfileSelected(selection)
+                }
+            }
+        });
+
+        me.translationProfileComboBox = comboBox;
+
+        setTimeout(function () {
+            // store is loaded async. this is not the prettiest solution, but it does the job..
+            if (translationProfileStore.data.items.length > 0) {
+                // preselect first profile
+                me.translationProfileComboBox.setValue(translationProfileStore.data.items[0].data.id)
+            }
+        }, 1000)
+
+        return comboBox;
+    },
+
+    onTranslationProfileSelected(selection) {
+        var me = this;
+
+        let sourceShopId = selection.sourceShopId;
+        let targetShopIds = null;
+        try {
+            targetShopIds = JSON.parse(selection.targetShopIds);
+        } catch { }
+
+
+        me.sourceShopComboBox.setValue(sourceShopId)
+        me.targetShopComboBox.setValue(targetShopIds)
     },
 
     getFieldsOfInterestComboBox: function () {
@@ -178,6 +230,7 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
     getTranslateButton: function () {
         var me = this;
         return Ext.create('Ext.button.Button', {
+            id: 'translateButton',
             text: '{s name=translateButtonText}Start Translation{/s}',
             scale: 'medium',
             maxWidth: 200,
@@ -185,6 +238,8 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
             style: 'margin: 20px 0 20px 0;',
             tooltip: '{s name=translateButtonTooltip}Starts the translation process{/s}',
             handler: function () {
+                // disable button after clicking to prevent multiple submissions
+                Ext.getCmp('translateButton').disable();
                 var data = {
                     projectName: me.projectNameField.value,
                     objectType: me.objectType,
@@ -201,11 +256,22 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
                     success: function(operation, opts) {
                         var response = Ext.decode(operation.responseText);
 
-                        if (response.success === false) {
+                        if (!response) {
+                            Ext.getCmp('translateButton').setDisabled(false);
                             Shopware.Notification.createGrowlMessage(
                                 '{s name=startTranslationErrorTitle}Error{/s}',
-                                '{s name=startTranslationErrorMessage}Something went wrong creating the project.{/s} ' + response.error_message + '');
+                                '{s name=startTranslationErrorMessage}Something went wrong creating the project.{/s} ');
+                        }
+
+                        if (response.success === false) {
+                            // enable button to allow retry
+                            Ext.getCmp('translateButton').setDisabled(false);
+                            Shopware.Notification.createGrowlMessage(
+                                '{s name=startTranslationErrorTitle}Error{/s}',
+                                '{s name=startTranslationErrorMessage}Something went wrong creating the project.{/s} ' + response.data + '');
                         } else {
+                            // close window after successful translation request
+                            me.mainWindow.close();
                             Shopware.Notification.createGrowlMessage(
                                 '{s name=startTranslationSuccessTitle}Success{/s}',
                                 '{s name=startTranslationSuccessMessage}New project successfully created{/s}');

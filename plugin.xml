@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="../../../engine/Shopware/Components/Plugin/schema/plugin.xsd">
     <label lang="de">EasyTranslate</label>
     <label lang="en">EasyTranslate</label>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <copyright>by EasyTranslate</copyright>
     <license>proprietary</license>
     <link>http://store.shopware.com</link>
@@ -11,8 +11,14 @@
 
     <compatibility minVersion="5.2.0" />
 
+    <changelog version="1.1.0">
+        <changes lang="de">Übersetzungsprofile hinzugefügt und Fehler behoben</changes>
+        <changes lang="en">added translation profile and resolved issues</changes>
+    </changelog>
+
     <changelog version="1.0.0">
         <changes lang="de">Erste Veröffentlichung</changes>
         <changes lang="en">Initial Release</changes>
     </changelog>
+
 </plugin>

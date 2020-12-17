@@ -48,21 +48,37 @@ class Shopware_Controllers_Backend_TranslationForm extends Shopware_Controllers_
 
         $shopRepository = $this->manager->getRepository(Shop::class);
 
-        $sourceShop = $shopRepository->find($sourceShopId);
-        $targetShops = $shopRepository->findBy(['id' => $targetShopIds]);
+        try {
+            $sourceShop = $shopRepository->find($sourceShopId);
+            $targetShops = $shopRepository->findBy(['id' => $targetShopIds]);
 
-        $sourceLanguage = new Language(
-            EasytranslateMapping::getSourceLocaleFromShop($this->manager, $sourceShop),
-            $sourceShopId
-        );
+            $sourceLanguage = new Language(
+                EasytranslateMapping::getSourceLocaleFromShop($this->manager, $sourceShop),
+                $sourceShopId
+            );
 
-        $targetLanguages = array_map(function($shop) {
-            $locale = EasytranslateMapping::getTargetLocaleFromShop($this->manager, $shop);
-            return new Language($locale, $shop->getId());
-        }, $targetShops);
+            $targetLanguages = array_map(function($shop) {
+                $locale = EasytranslateMapping::getTargetLocaleFromShop($this->manager, $shop);
+                return new Language($locale, $shop->getId());
+            }, $targetShops);
+        } catch (Exception $e) {
+            $this->View()->assign([
+                'success' => false,
+                'data' => 'Could not find selected languages. Please check your input.',
+            ]);
+            return;
+        }
 
-        $project = Translator::translate($identifiers, $objectType, $fieldsOfInterest, $sourceLanguage,
-            $targetLanguages, $projectName);
+        try {
+            $project = Translator::translate($identifiers, $objectType, $fieldsOfInterest, $sourceLanguage,
+                $targetLanguages, $projectName);
+        } catch (Exception $e) {
+            $this->View()->assign([
+                'success' => false,
+                'data' => 'Internal error during project request',
+            ]);
+            return;
+        }
 
         $this->View()->assign([
             'success' => true,

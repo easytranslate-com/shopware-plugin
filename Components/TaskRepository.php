@@ -57,6 +57,7 @@ class TaskRepository implements Repository
             $task->setTranslationProject(ProjectRepository::toShopware($em, $entity->getProject()));
             $task->setStatus($entity->getStatus());
             $task->setPrice($entity->getPrice());
+            $task->setDeadline($entity->getDeadline());
             return $task;
         } else {
             return new ShopwareTask(
@@ -65,7 +66,9 @@ class TaskRepository implements Repository
                 $targetShop,
                 ProjectRepository::toShopware($em, $entity->getProject()),
                 $entity->getStatus(),
-                $entity->getPrice()
+                $entity->getPrice(),
+                $entity->getCreationDate(),
+                $entity->getDeadline()
             );
         }
     }
@@ -85,7 +88,9 @@ class TaskRepository implements Repository
             new Language($targetLocale, $task->getTargetShop()->getId()),
             ProjectRepository::fromShopware($task->getTranslationProject()),
             $task->getStatus(),
-            $task->getPrice()
+            $task->getPrice(),
+            $task->getCreationDate(),
+            $task->getDeadline()
         );
     }
 

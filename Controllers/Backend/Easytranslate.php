@@ -20,6 +20,12 @@ class Shopware_Controllers_Backend_Easytranslate extends Shopware_Controllers_Ba
         $this->setManager(Shopware()->Models());
     }
 
+    public function additionalMenuEntry() {
+        // there are naming issues if two (sub-)menus use the same action. therefore I created this
+        // additional entry point.
+        self::init();
+    }
+
     protected function getListQuery()
     {
         $builder = parent::getListQuery();
@@ -39,34 +45,41 @@ class Shopware_Controllers_Backend_Easytranslate extends Shopware_Controllers_Ba
     }
 
     public function acceptOrDeclineProjectPriceAction() {
-        $projectId = $this->Request()->getParam('projectId');
-        $acceptOrDecline = $this->Request()->getParam('acceptOrDecline');
+        try {
+            $projectId = $this->Request()->getParam('projectId');
+            $acceptOrDecline = $this->Request()->getParam('acceptOrDecline');
 
-        $apiService = Config::getApiService();
-        if ($acceptOrDecline === 'accept') {
-            $apiService->acceptPriceForProject($projectId);
+            $apiService = Config::getApiService();
+            if ($acceptOrDecline === 'accept') {
+                $apiService->acceptPriceForProject($projectId);
+            } elseif ($acceptOrDecline === 'decline') {
+                $apiService->declinePriceForProject($projectId);
+            }
+
+            $projectData = $apiService->getProject($projectId);
+
+            Translator::updateProject($projectData['data']);
+
+            foreach ($projectData['included'] as $taskData) {
+                if ($taskData['type'] !== 'task') continue;
+
+                $task = Translator::updateTask($taskData);
+
+                $newTaskLog = new TaskLog($task, json_encode($taskData));
+                Config::getTaskLogRepository()->save($newTaskLog);
+            }
+
+            $this->View()->assign([
+                'success' => true,
+                'data' => [],
+            ]);
+            return;
+        } catch (Exception $exception) {
+            $this->View()->assign([
+                'success' => false,
+                'data' => [],
+            ]);
         }
-        elseif ($acceptOrDecline === 'decline') {
-            $apiService->declinePriceForProject($projectId);
-        }
-
-        $projectData = $apiService->getProject($projectId);
-
-        Translator::updateProject($projectData['data']);
-
-        foreach ($projectData['included'] as $taskData) {
-            if ($taskData['type'] !== 'task') continue;
-
-            $task = Translator::updateTask($taskData);
-
-            $newTaskLog = new TaskLog($task, json_encode($taskData));
-            Config::getTaskLogRepository()->save($newTaskLog);
-        }
-
-        $this->View()->assign([
-            'success' => true,
-            'data' => [],
-        ]);
     }
 
     public function fetchProjectsAction() {
@@ -102,27 +115,36 @@ class Shopware_Controllers_Backend_Easytranslate extends Shopware_Controllers_Ba
     }
 
     public function fetchTranslatedContentAction() {
-        $taskIds = $this->Request()->getParam('taskId');
-        $apiService = Config::getApiService();
 
-        foreach ($taskIds as $taskId) {
-            $task = Config::getTaskRepository()->load($taskId);
+        try {
+            $taskIds = $this->Request()->getParam('taskId');
+            $apiService = Config::getApiService();
 
-            $project = $task->getProject();
+            foreach ($taskIds as $taskId) {
+                $task = Config::getTaskRepository()->load($taskId);
 
-            $taskTranslatedContent = $apiService->getContentForTask($project->getProjectId(), $taskId);
+                $project = $task->getProject();
 
-            $type = $project->getObjectType();
-            $fieldsOfInterest = $project->getFieldsOfInterest();
+                $taskTranslatedContent = $apiService->getContentForTask($project->getProjectId(), $taskId);
 
-            foreach($taskTranslatedContent as $id => $content) {
-                $className = Config::getTranslatableEntities()[$type];
-                /**
-                 * @var Translatable $object
-                 */
-                $translatable = new $className();
-                $translatable->setContent($taskId, $id, $content, $fieldsOfInterest, $task);
+                $type = $project->getObjectType();
+                $fieldsOfInterest = $project->getFieldsOfInterest();
+
+                foreach ($taskTranslatedContent as $id => $content) {
+                    $className = Config::getTranslatableEntities()[$type];
+                    /**
+                     * @var Translatable $object
+                     */
+                    $translatable = new $className();
+                    $translatable->setContent($taskId, $id, $content, $fieldsOfInterest, $task);
+                }
             }
+        } catch (Exception $exception) {
+            $this->View()->assign([
+                'success' => false,
+                'data' => [],
+            ]);
+            return;
         }
 
         $this->View()->assign([

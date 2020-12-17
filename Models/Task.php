@@ -2,6 +2,7 @@
 
 namespace Easytranslate\Models;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Shopware\Components\Model\ModelEntity;
 use Shopware\Models\Shop\Shop;
@@ -77,6 +78,20 @@ class Task extends ModelEntity
     protected $price;
 
     /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="creation_date", type="datetime", nullable=true)
+     */
+    private $creationDate = null;
+
+    /**
+     * @var DateTime|null
+     *
+     * @ORM\Column(name="deadline", type="datetime", nullable=true)
+     */
+    private $deadline = null;
+
+    /**
      * TranslationTask constructor.
      * @param string $taskId
      * @param Shop $sourceShop
@@ -84,8 +99,11 @@ class Task extends ModelEntity
      * @param Project $translationProject
      * @param string $status
      * @param string $price
+     * @param DateTime|null $creationDate
+     * @param DateTime|null $deadline
      */
-    public function __construct(string $taskId, Shop $sourceShop, Shop $targetShop, Project $translationProject, string $status, string $price)
+    public function __construct(string $taskId, Shop $sourceShop, Shop $targetShop, Project $translationProject,
+                                string $status, string $price, ?DateTime $creationDate, ?DateTime $deadline)
     {
         $this->taskId = $taskId;
         $this->sourceShop = $sourceShop;
@@ -93,6 +111,8 @@ class Task extends ModelEntity
         $this->translationProject = $translationProject;
         $this->status = $status;
         $this->price = $price;
+        $this->creationDate = $creationDate;
+        $this->deadline = $deadline;
     }
 
     /**
@@ -198,4 +218,37 @@ class Task extends ModelEntity
     {
         $this->price = $price;
     }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getCreationDate(): ?DateTime
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * @param DateTime|null $creationDate
+     */
+    public function setCreationDate(?DateTime $creationDate): void
+    {
+        $this->creationDate = $creationDate;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getDeadline(): ?DateTime
+    {
+        return $this->deadline;
+    }
+
+    /**
+     * @param DateTime|null $deadline
+     */
+    public function setDeadline(?DateTime $deadline): void
+    {
+        $this->deadline = $deadline;
+    }
+
 }

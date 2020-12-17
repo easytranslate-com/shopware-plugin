@@ -2,6 +2,7 @@
 
 namespace Easytranslate\Components\Easytranslate;
 
+use DateTime;
 use Easytranslate\Components\Easytranslate\Models\Project;
 use Easytranslate\Components\Easytranslate\Models\Task;
 use Easytranslate\Components\Easytranslate\Models\TaskLog;
@@ -73,6 +74,11 @@ class Translator
             $targetLocale = $task['attributes']['target_language'];
             $status = $task['attributes']['status'];
             $price = $task['attributes']['price'];
+            $creationDate = DateTime::createFromFormat('Y-m-d\TH:i:s.uP', $task['attributes']['created_at']);
+            $deadline = DateTime::createFromFormat('Y-m-d', $task['attributes']['deadline']);
+            if (!$deadline) {
+                $deadline = null;
+            }
 
             $matchingTargetLocales = array_values(
                 array_filter($targetLanguages, function(Language $lang) use ($targetLocale) {
@@ -84,7 +90,8 @@ class Translator
                 throw new Exception("No matching target locales found");
             }
 
-            $newTask = new Task($taskId, $sourceLanguage, $matchingTargetLocales[0], $project, $status, json_encode($price));
+            $newTask = new Task($taskId, $sourceLanguage, $matchingTargetLocales[0], $project, $status,
+                json_encode($price), $creationDate, $deadline);
             Config::getTaskRepository()->save($newTask);
 
             $newTaskLog = new TaskLog($newTask, json_encode($task));
@@ -157,11 +164,17 @@ class Translator
         $taskId = $taskData['id'];
         $taskPrice = $taskData['attributes']['price'];
         $taskStatus = $taskData['attributes']['status'];
+        $taskDeadline = DateTime::createFromFormat('Y-m-d', $taskData['attributes']['deadline']);
+        if (!$taskDeadline) {
+            $taskDeadline = null;
+        }
+
 
         /** @var Task $task */
         $task = Config::getTaskRepository()->load($taskId);
         $task->setStatus($taskStatus);
         $task->setPrice(json_encode($taskPrice));
+        $task->setDeadline($taskDeadline);
         Config::getTaskRepository()->update($task);
 
         return $task;

@@ -2,6 +2,7 @@
 
 namespace Easytranslate\Components\Easytranslate\Models;
 
+use DateTime;
 use Easytranslate\Components\Easytranslate\Language;
 
 /**
@@ -45,6 +46,16 @@ class Task
      */
     protected $price;
 
+    /**
+     * @var DateTime|null
+     */
+    private $creationDate = null;
+
+    /**
+     * @var DateTime|null
+     */
+    private $deadline = null;
+
 
     /**
      * Task constructor.
@@ -54,9 +65,12 @@ class Task
      * @param Project $translationProject
      * @param string $status
      * @param string $price
+     * @param DateTime|null $creationDate
+     * @param DateTime|null $deadline
      */
     public function __construct(string $taskId, Language $sourceLocale, Language $targetLocale,
-                                Project $translationProject, string $status, string $price)
+                                Project $translationProject, string $status, string $price, ?\DateTime $creationDate,
+                                ?\DateTime $deadline)
     {
         $this->taskId = $taskId;
         $this->sourceLocale = $sourceLocale;
@@ -64,6 +78,8 @@ class Task
         $this->project = $translationProject;
         $this->status = $status;
         $this->price = $price;
+        $this->creationDate = $creationDate;
+        $this->deadline = $deadline;
     }
 
     /**
@@ -169,4 +185,38 @@ class Task
     {
         $this->price = $price;
     }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getCreationDate(): ?DateTime
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * @param DateTime|null $creationDate
+     */
+    public function setCreationDate(?DateTime $creationDate): void
+    {
+        $this->creationDate = $creationDate;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getDeadline(): ?DateTime
+    {
+        return $this->deadline;
+    }
+
+    /**
+     * @param DateTime|null $deadline
+     */
+    public function setDeadline(?DateTime $deadline): void
+    {
+        $this->deadline = $deadline;
+    }
+
+
 }

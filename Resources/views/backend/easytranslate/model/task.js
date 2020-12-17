@@ -14,6 +14,8 @@ Ext.define('Shopware.apps.Easytranslate.model.Task', {
         { name : 'targetShopId', type: 'int' },
         { name : 'status', type: 'string' },
         { name : 'price', type: 'string' },
+        { name : 'creationDate', type: 'date', dateFormat: 'Y-m-d H:i:s' },
+        { name : 'deadline', type: 'date', dateFormat: 'Y-m-d' },
     ],
 });
 

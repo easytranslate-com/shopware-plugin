@@ -26,7 +26,8 @@ class ControllerPath implements SubscriberInterface
     {
         return array(
             'Enlight_Controller_Dispatcher_ControllerPath_Backend_Easytranslate' => 'onGetEasytranslateController',
-            'Enlight_Controller_Dispatcher_ControllerPath_Backend_TranslationForm' => 'onGetTranslationFormController'
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_TranslationForm' => 'onGetTranslationFormController',
+            'Enlight_Controller_Dispatcher_ControllerPath_Backend_TranslationProfile' => 'onGetTranslationProfileController'
         );
     }
 
@@ -54,5 +55,18 @@ class ControllerPath implements SubscriberInterface
         Config::initialize(new EasytranslateImpl());
         $this->container->get('template')->addTemplateDir(__DIR__ . '/../Resources/views/');
         return __DIR__ . '/../Controllers/Backend/TranslationForm.php';
+    }
+
+    /**
+     * Register the task controller
+     *
+     * @param   \Enlight_Event_EventArgs $args
+     * @return  string
+     * @Enlight\Event Enlight_Controller_Dispatcher_ControllerPath_Backend_Task     */
+    public function onGetTranslationProfileController(\Enlight_Event_EventArgs $args)
+    {
+        Config::initialize(new EasytranslateImpl());
+        $this->container->get('template')->addTemplateDir(__DIR__ . '/../Resources/views/');
+        return __DIR__ . '/../Controllers/Backend/TranslationProfile.php';
     }
 }
