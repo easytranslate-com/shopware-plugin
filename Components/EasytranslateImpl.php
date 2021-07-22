@@ -103,9 +103,24 @@ class EasytranslateImpl implements Easytranslate
             $sandboxMode = $container->get('config')->getByNamespace('Easytranslate', 'Sandbox Mode');
         }
 
-        if (!$username or !$password or !$clientId or !$clientSecret or !$sandboxMode) {
-            throw new Exception("Plugin config not loaded properly");
+        if (!$username or !$password or !$clientId or !$clientSecret or !isset($sandboxMode)) {
+            if (!$username) {
+                throw new Exception("Plugin config not loaded properly; username missing");
+            }
+            if (!$password) {
+                throw new Exception("Plugin config not loaded properly; password missing");
+            }
+            if (!$clientId) {
+                throw new Exception("Plugin config not loaded properly; clientId missing");
+            }
+            if (!$clientSecret) {
+                throw new Exception("Plugin config not loaded properly; clientSecret missing");
+            }
+            if (!isset($sandboxMode)) {
+                throw new Exception("Plugin config not loaded properly; sandboxMode missing");
+            }
         }
+
 
         return new EasytranslateApi($username, $password, $clientId, $clientSecret, $sandboxMode);
     }
