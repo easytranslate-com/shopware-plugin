@@ -64,7 +64,7 @@ class Shopware_Controllers_Backend_TranslationForm extends Shopware_Controllers_
         } catch (Exception $e) {
             $this->View()->assign([
                 'success' => false,
-                'data' => 'Could not find selected languages. Please check your input.',
+                'data' => 'Could not find selected languages. Please check your input. Details: '.$e->getMessage(),
             ]);
             return;
         }
@@ -75,7 +75,7 @@ class Shopware_Controllers_Backend_TranslationForm extends Shopware_Controllers_
         } catch (Exception $e) {
             $this->View()->assign([
                 'success' => false,
-                'data' => 'Internal error during project request',
+                'data' => 'Internal error during project request: '.$e->getMessage(),
             ]);
             return;
         }
