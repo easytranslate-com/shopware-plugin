@@ -219,7 +219,7 @@ class EasytranslateMapping
 
     const LOCALE_SHOPWARE_EASYTRANSLATE_TARGET = [
         "de_DE" => "de",
-        "en_GB" => "en_GB",
+        "en_GB" => "en_US",
         "aa_DJ" => "aa",
         "aa_ER" => "aa",
         "aa_ET" => "aa",
@@ -277,6 +277,7 @@ class EasytranslateMapping
         "fi_FI" => "fi",
         "fil_PH" => "fil",
         "fo_FO" => "fo",
+        "fr_LU" => "de_LU",
         "fr_BE" => "fr_BE",
         "fr_CA" => "fr_CA",
         "fr_CH" => "fr_CH",
@@ -325,7 +326,7 @@ class EasytranslateMapping
         "ne_NP" => "ne_NP",
         "nl_BE" => "nl_BE",
         "nl_NL" => "nl_NL",
-        "nn_NO" => "nn_NO",
+        "nn_NO" => "nb_NO",
         "om_ET" => "om",
         "om_KE" => "om",
         "pa_IN" => "pa",
