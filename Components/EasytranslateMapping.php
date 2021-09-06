@@ -277,7 +277,7 @@ class EasytranslateMapping
         "fi_FI" => "fi",
         "fil_PH" => "fil",
         "fo_FO" => "fo",
-        "fr_LU" => "de_LU",
+        "fr_LU" => "de_LB",
         "fr_BE" => "fr_BE",
         "fr_CA" => "fr_CA",
         "fr_CH" => "fr_CH",
