@@ -24,15 +24,15 @@
             <argument type="service" id="service_container" />
         </service>
 
-        <service id="easytranslate.project_repository" class="Easytranslate\Components\ProjectRepository">
+        <service id="easytranslate.project_repository" class="Easytranslate\Components\ProjectRepository" public="true">
             <argument type="service" id="models" />
         </service>
 
-        <service id="easytranslate.task_repository" class="Easytranslate\Components\TaskRepository">
+        <service id="easytranslate.task_repository" class="Easytranslate\Components\TaskRepository" public="true">
             <argument type="service" id="models" />
         </service>
 
-        <service id="easytranslate.task_log_repository" class="Easytranslate\Components\TaskLogRepository">
+        <service id="easytranslate.task_log_repository" class="Easytranslate\Components\TaskLogRepository" public="true">
             <argument type="service" id="models" />
         </service>
 
