@@ -306,6 +306,11 @@ Ext.define('Shopware.apps.TranslationForm.controller.Main', {
                 { "technicalName": "metatitle", "humanReadable": "Meta title"},
                 { "technicalName": "metadescription", "humanReadable": "Meta description"},
                 { "technicalName": "metakeywords", "humanReadable": "Meta keywords"},
+                { "technicalName": "attribute1", "humanReadable": "Freetext 1"},
+                { "technicalName": "attribute2", "humanReadable": "Freetext 2"},
+                { "technicalName": "attribute3", "humanReadable": "Freetext 3"},
+                { "technicalName": "attribute4", "humanReadable": "Freetext 4"},
+                { "technicalName": "attribute5", "humanReadable": "Freetext 5"},
             ],
             "snippet": [
                 { "technicalName": "value", "humanReadable": "Snippet value"},

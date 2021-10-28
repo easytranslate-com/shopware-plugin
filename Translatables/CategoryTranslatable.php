@@ -14,6 +14,7 @@ class CategoryTranslatable implements Translatable
 {
     protected $entityName;
     protected $objectType;
+    protected $objectTypeAttributes;
     protected $objectId;
     protected $connection;
     protected $em;
@@ -31,6 +32,7 @@ class CategoryTranslatable implements Translatable
     public function __construct()
     {
         $this->objectType = 'category';
+        $this->objectTypeAttributes = 's_categories_attributes';
         $this->entityName = 's_categories';
 
         $this->container = Shopware()->Container();
@@ -48,6 +50,11 @@ class CategoryTranslatable implements Translatable
             "metatitle" => "metaTitle",
             "metadescription" => "metaDescription",
             "metakeywords" => "metaKeywords",
+            "attribute1" => "attribute1",
+            "attribute2" => "attribute2",
+            "attribute3" => "attribute3",
+            "attribute4" => "attribute4",
+            "attribute5" => "attribute5",
         ];
     }
 
@@ -101,7 +108,19 @@ class CategoryTranslatable implements Translatable
 
         $mergedContent = array_merge($currentTranslation['data'], $content);
 
-        $this->translationComponent->write($shopId, $this->objectType, $identifier, $mergedContent, false);
+        $normalContent = [];
+        $attributesContent = [];
+
+        foreach ($mergedContent as $key => $value) {
+            if (strstr($key, "attribute")) {
+                $attributesContent[str_replace("attribute", "__attribute_attribute", $key)] = $value;
+            } else {
+                $normalContent[$key] = $value;
+            }
+        }
+
+        $this->translationComponent->write($shopId, $this->objectType, $identifier, $normalContent, false);
+        $this->translationComponent->write($shopId, $this->objectTypeAttributes, $identifier, $attributesContent, false);
     }
 
 
@@ -117,22 +136,38 @@ class CategoryTranslatable implements Translatable
                 'type' => $this->objectType,
                 'shopId' => $shopId,
             ]);
+        $builder2 = $translationRepository->createQueryBuilder('translations');
+        $builder2->setFirstResult(0)
+            ->setMaxResults(1)
+            ->addFilter([
+                'key' => $identifier,
+                'type' => $this->objectTypeAttributes,
+                'shopId' => $shopId,
+            ]);
 
-        return $builder->getQuery()->getOneOrNullResult($resultMode);
+        return array_merge($builder->getQuery()->getOneOrNullResult($resultMode), $builder2->getQuery()->getOneOrNullResult($resultMode));
+
     }
 
     protected function getObjectTranslationFallback($identifier, $resultMode = AbstractQuery::HYDRATE_ARRAY)
     {
 
         $categoryRepository = Shopware()->Models()->getRepository(Category::class);
+        $categoryAttributeRepository = Shopware()->Models()->getRepository(\Shopware\Models\Attribute\Category::class);
         /** @var QueryBuilder $builder */
         $builder = $categoryRepository->createQueryBuilder('categories');
         $builder->setFirstResult(0)
             ->setMaxResults(1)
             ->addFilter(['id' => $identifier]
             );
+        $builder2 = $categoryAttributeRepository->createQueryBuilder('categories_attributes');
+        $builder2->setFirstResult(0)
+            ->setMaxResults(1)
+            ->addFilter(['categoryId' => $identifier]
+            );
 
-        return $builder->getQuery()->getOneOrNullResult($resultMode);
+        return array_merge($builder->getQuery()->getOneOrNullResult($resultMode), $builder2->getQuery()->getOneOrNullResult($resultMode));
+
     }
 
     public function getType()
