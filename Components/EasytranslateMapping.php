@@ -377,7 +377,11 @@ class EasytranslateMapping
         "zh_CN" => "zh_CN",
         "zh_HK" => "zh_HK",
         "zh_TW" => "zh_TW",
-        "zu_ZA" => "zu"
+        "zu_ZA" => "zu",
+        "lu" => "lb",
+        "lu_LU" => "lb",
+        "en" => "en_GB",
+        "en_EN" => "en_GB"
     ];
 
     /**
